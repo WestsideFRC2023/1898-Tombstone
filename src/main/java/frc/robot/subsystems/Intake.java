@@ -3,36 +3,48 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import frc.robot.Constants.IntakeConstants;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Intake extends SubsystemBase {
-  /** Creates a new SwerveDrive. */
-  public Intake() {}
-
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
-  public CommandBase exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
+public class Intake extends SubsystemBase
+{
+  private CANSparkMax intakeMotor;
+  
+  /** Creates a new Intake. */
+  public Intake()
+  {
+    intakeMotor = new CANSparkMax(IntakeConstants.kSparkMaxPort, MotorType.kBrushless);
+    intakeMotor.setIdleMode(IdleMode.kBrake);
+    intakeMotor.setSmartCurrentLimit(20, 25);
+    intakeMotor.burnFlash();
   }
 
-  /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
-   */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
+  public void pickUp()
+  {
+    intakeMotor.set(0.75);
+  }
+  
+  public void outtake()
+  {
+    intakeMotor.set(-0.75);
+  }
+
+  public void stop()
+  {
+    intakeMotor.set(0);
+  }
+
+  public void hold() {
+    intakeMotor.set(.004);
+  }
+
+  public double getSpeed()
+  {
+    return intakeMotor.getEncoder().getVelocity();
   }
 
   @Override

@@ -10,8 +10,11 @@ import frc.robot.commands.RobotCentricDrive;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Intake;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -27,9 +30,15 @@ public class RobotContainer {
   private final Intake intake = new Intake();
   
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
+  // XBOX Controller Definition
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final XboxController m_opController =
+      new XboxController(OperatorConstants.kOpControllerPort);
+
+  // XBOX Button Maps
+  private final JoystickButton Intake_LB = new JoystickButton(m_opController, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton Outtake_RB = new JoystickButton(m_opController, XboxController.Button.kRightBumper.value);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -45,7 +54,13 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  private void configureBindings() {
+  private void configureBindings()
+  {
+    Intake_LB.onTrue(new InstantCommand(() -> intake.pickUp()));
+    Intake_LB.onFalse(new InstantCommand(() -> intake.hold()));
+    Outtake_RB.onTrue(new InstantCommand(() -> intake.outtake()));
+    Outtake_RB.onFalse(new InstantCommand(() -> intake.stop()));
+
   }
 
   /**

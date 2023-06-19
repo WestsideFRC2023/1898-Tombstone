@@ -18,6 +18,9 @@ public final class Constants {
   }
   
   public static class SwerveDriveConstants {
+    // Drivetrain
+    public static final double MAX_SPEED_FPS = 	 14.63; // feet per second
+    
     /* 
       locations of each swerve module
       FL = Front Left
@@ -28,7 +31,6 @@ public final class Constants {
       X = offset from center, + is forward, - is backwards
       Y = offset from center, + is left, - is right
     */    
-
     public static final double FL_X_LOCATION = 11.75;
     public static final double FL_Y_LOCATION = 11.75;
 
@@ -42,7 +44,6 @@ public final class Constants {
     public static final double FR_Y_LOCATION = -11.75;
 
     // CAN IDs and PWM Control
-
     public static final int FL_DRIVE_CANID = 10;
     public static final int FL_STEER_CANID = 11;
     public static final int FL_ABS_PWMID = 0;
@@ -59,6 +60,12 @@ public final class Constants {
     public static final int FR_STEER_CANID = 41;
     public static final int FR_ABS_PWMID = 3;
 
+    // Absolute Encoder Offsets
+    public static final double FL_ABS_OFFSET = 0;
+    public static final double BL_ABS_OFFSET = 0;
+    public static final double BR_ABS_OFFSET = 0;
+    public static final double FR_ABS_OFFSET = 0;
+    
   }
   public static class SwerveModuleConstants {
     
@@ -70,6 +77,7 @@ public final class Constants {
     public static final double DRIVE_MOTOR_PID_KD = 0;
     public static final double DRIVE_MOTOR_PID_KP = 0;
     public static final double DRIVE_MOTOR_PID_KI = 0;
+    public static final double DRIVE_MOTOR_PID_TOLERANCE = 0;
     // Drive FeedForward
     public static final double DRIVE_MOTOR_FF_KS = 0;
     public static final double DRIVE_MOTOR_FF_KV = 0;
@@ -82,6 +90,7 @@ public final class Constants {
     public static final double STEER_MOTOR_PID_KD = 0;
     public static final double STEER_MOTOR_PID_KP = 0;
     public static final double STEER_MOTOR_PID_KI = 0;
+    public static final double STEER_MOTOR_PID_TOLERANCE = 0;
     // Steer Trapezoidal Motion Profile
     public static final double STEER_MOTOR_TMP_MAXVELOCITY = 5;
     public static final double STEER_MOTOR_TMP_MAXACCELERATION = 10;

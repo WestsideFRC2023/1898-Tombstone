@@ -8,8 +8,9 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import frc.robot.Constants;
+import frc.robot.Constants.SwerveModuleConstants;
 
 // Class that is used to represent swerve modules, contains motor control and encoder logic
 // uses rotation2d for input from encoders
@@ -44,35 +45,34 @@ public class SwerveModule {
         absEncoder = encoder;
 
         // drive motor setup
-        driveMotor.setSmartCurrentLimit(Constants.SwerveModuleConstants.DRIVE_MOTOR_CURRENT_LIMIT);
-        driveMotor.getEncoder().setVelocityConversionFactor(Constants.SwerveModuleConstants.DRIVE_MOTOR_VELOCITY_RATIO);
+        driveMotor.setSmartCurrentLimit(SwerveModuleConstants.DRIVE_MOTOR_CURRENT_LIMIT);
+        driveMotor.getEncoder().setVelocityConversionFactor(SwerveModuleConstants.DRIVE_MOTOR_VELOCITY_RATIO);
         drivePID = new PIDController(
-            Constants.SwerveModuleConstants.DRIVE_MOTOR_PID_KP, 
-            Constants.SwerveModuleConstants.DRIVE_MOTOR_PID_KI, 
-            Constants.SwerveModuleConstants.DRIVE_MOTOR_PID_KD);
+            SwerveModuleConstants.DRIVE_MOTOR_PID_KP, 
+            SwerveModuleConstants.DRIVE_MOTOR_PID_KI, 
+            SwerveModuleConstants.DRIVE_MOTOR_PID_KD);
         driveFF = new SimpleMotorFeedforward(
-            Constants.SwerveModuleConstants.DRIVE_MOTOR_FF_KS,
-            Constants.SwerveModuleConstants.DRIVE_MOTOR_FF_KA,
-            Constants.SwerveModuleConstants.DRIVE_MOTOR_FF_KV);
+            SwerveModuleConstants.DRIVE_MOTOR_FF_KS,
+            SwerveModuleConstants.DRIVE_MOTOR_FF_KA,
+            SwerveModuleConstants.DRIVE_MOTOR_FF_KV);
 
         // steer motor setup
-        steerMotor.setSmartCurrentLimit(Constants.SwerveModuleConstants.STEER_MOTOR_CURRENT_LIMIT);
-        steerMotor.setVoltage(Constants.SwerveModuleConstants.STEER_MOTOR_VOLTAGE);
+        steerMotor.setSmartCurrentLimit(SwerveModuleConstants.STEER_MOTOR_CURRENT_LIMIT);
+        steerMotor.setVoltage(SwerveModuleConstants.STEER_MOTOR_VOLTAGE);
         steerMotor.getEncoder().setPosition(this.getAbsEncoderRot2d().getRotations()); // aligns relative encoder with absolute encoder
-        steerMotor.getEncoder().setPositionConversionFactor(1/Constants.SwerveModuleConstants.STEER_MOTOR_GEARREDUCTION);
+        steerMotor.getEncoder().setPositionConversionFactor(1/SwerveModuleConstants.STEER_MOTOR_GEARREDUCTION);
         steerPID = new ProfiledPIDController(
-            Constants.SwerveModuleConstants.STEER_MOTOR_PID_KP, 
-            Constants.SwerveModuleConstants.STEER_MOTOR_PID_KI, 
-            Constants.SwerveModuleConstants.STEER_MOTOR_PID_KD,
+            SwerveModuleConstants.STEER_MOTOR_PID_KP, 
+            SwerveModuleConstants.STEER_MOTOR_PID_KI, 
+            SwerveModuleConstants.STEER_MOTOR_PID_KD,
             new TrapezoidProfile.Constraints(
-                Constants.SwerveModuleConstants.STEER_MOTOR_TMP_MAXVELOCITY, 
-                Constants.SwerveModuleConstants.STEER_MOTOR_TMP_MAXACCELERATION));
+                SwerveModuleConstants.STEER_MOTOR_TMP_MAXVELOCITY, 
+                SwerveModuleConstants.STEER_MOTOR_TMP_MAXACCELERATION));
 
         // encoder setup
         absEncoder.setDutyCycleRange(
-            Constants.SwerveModuleConstants.ABS_ENCODER_DUTYCYCLE_MIN, 
-            Constants.SwerveModuleConstants.ABS_ENCODER_DUTYCYCLE_MAX);
-        
+            SwerveModuleConstants.ABS_ENCODER_DUTYCYCLE_MIN, 
+            SwerveModuleConstants.ABS_ENCODER_DUTYCYCLE_MAX);
         
     }
 
@@ -91,7 +91,7 @@ public class SwerveModule {
      * @return value of the absolute encoder, accounting for rollovers
      */
     public Rotation2d getAbsEncoderRot2d() { // startup angle, zero is forward
-        absEncoderRot2d = Rotation2d.fromRotations((absEncoder.getAbsolutePosition() - absEncoder.getPositionOffset()) % 1);
+        absEncoderRot2d = Rotation2d.fromRotations((absEncoder.get()) % 1);
         return absEncoderRot2d; // startup angle
     }
 
@@ -114,15 +114,15 @@ public class SwerveModule {
 
     /**
      * uses a profiled PID Controller to control the steer motor to go the desired angle using a trapezoidal motion profile and a PID Controller
-     * <p>uses a feedforward Controller and a PID Controller to control the drive motor
+     * <p>uses a feedforward Controller and a PID Controller to control the drive motor to go at a desired speed
      */
     public void goToState() {
         driveMotor.setVoltage( // sets voltage of drive motor
             drivePID.calculate(
-                driveMotor.getEncoder().getVelocity(), desiredState.speedMetersPerSecond) // pid
-                +
-                driveFF.calculate(desiredState.speedMetersPerSecond)); // feedforward
-
+                driveMotor.getEncoder().getVelocity(), Units.metersToFeet(desiredState.speedMetersPerSecond)) // pid
+            +
+            driveFF.calculate(Units.metersToFeet(desiredState.speedMetersPerSecond))); // feedforward
+                
         steerMotor.set( // sets speed of steering motor
             steerPID.calculate(
                 this.getRelSteerEncoderRot2d().getRotations(), // current 

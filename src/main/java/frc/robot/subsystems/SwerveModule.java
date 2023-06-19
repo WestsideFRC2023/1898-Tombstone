@@ -6,6 +6,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -32,6 +33,9 @@ public class SwerveModule {
 
     // desired state
     private SwerveModuleState desiredState;
+
+    // current position (for odometry)
+    private SwerveModulePosition modulePosition;
     /**
      * 
      * @param driveMotor
@@ -46,6 +50,10 @@ public class SwerveModule {
 
         // drive motor setup
         driveMotor.setSmartCurrentLimit(SwerveModuleConstants.DRIVE_MOTOR_CURRENT_LIMIT);
+        // for odometry
+        driveMotor.getEncoder().setPosition(0);
+        driveMotor.getEncoder().setPositionConversionFactor(SwerveModuleConstants.DRIVE_MOTOR_VELOCITY_RATIO); // makes it distance in feet
+        // for control
         driveMotor.getEncoder().setVelocityConversionFactor(SwerveModuleConstants.DRIVE_MOTOR_VELOCITY_RATIO);
         drivePID = new PIDController(
             SwerveModuleConstants.DRIVE_MOTOR_PID_KP, 
@@ -105,7 +113,33 @@ public class SwerveModule {
         return Rotation2d.fromRotations(steerMotor.getEncoder().getPosition() % 1);
     }
 
-    
+    // Position for odometry
+    /**
+     * returns the current position of the swerve module
+     * @return the current position of the swerve module
+     */
+    public SwerveModulePosition getModulePosition() {
+        modulePosition = new SwerveModulePosition(
+            Units.feetToMeters(driveMotor.getEncoder().getPosition()), // distance the wheel traveled in meters
+            this.getRelSteerEncoderRot2d()); // angle of module
+        return modulePosition;
+    }
+
+    /**
+     * zeros the position readout of the encoders of the drive and steer motors
+     * <p><b>Note</B> This will make the steer encoder think the current position is zero, so it may misalign its readout to the absolute encoder
+     * <p> Initial alignment an reset is already done when the module is constructed
+     */
+    public void resetModulePosition() {
+        driveMotor.getEncoder().setPosition(0);
+        steerMotor.getEncoder().setPosition(0);
+    }
+    /**
+     * aligns the steer encoder with the absolute encoder
+     */
+    public void alignRelEncoderToAbsEncoder() {
+        steerMotor.getEncoder().setPosition(this.getAbsEncoderRot2d().getRotations());
+    }
 
     // Getters (for debugging)
     /**

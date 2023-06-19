@@ -71,7 +71,7 @@ public final class Constants {
     
     public static final int DRIVE_MOTOR_CURRENT_LIMIT = 40;
     public static final double DRIVE_MOTOR_GEARREDUCTION = 5.08;
-    public static final double DRIVE_MOTOR_VELOCITY_RATIO = (1/DRIVE_MOTOR_GEARREDUCTION) * (Math.PI*3);
+    public static final double DRIVE_MOTOR_VELOCITY_RATIO = (1/DRIVE_MOTOR_GEARREDUCTION) * (Math.PI*0.25);
     public static final double DRIVE_MOTOR_MAX_VOLTAGE = 12;
     // Drive PID
     public static final double DRIVE_MOTOR_PID_KD = 0;

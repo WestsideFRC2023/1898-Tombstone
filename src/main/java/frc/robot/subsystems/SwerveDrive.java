@@ -8,9 +8,12 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -67,6 +70,19 @@ public class SwerveDrive extends SubsystemBase {
   
   // implement NAVX
   private final AHRS NavX = new AHRS(Port.kMXP);
+  // build odometry module
+  private final SwerveDriveOdometry driveOdometry = new SwerveDriveOdometry(
+    driveKinematics, 
+    NavX.getRotation2d(), 
+    new SwerveModulePosition[] {
+      frontLeftSwerveModule.getModulePosition(),
+      backLeftSwerveModule.getModulePosition(),
+      backRightSwerveModule.getModulePosition(),
+      frontRightSwerveModule.getModulePosition()
+    });
+  
+  // robot pose
+  public Pose2d drivePose;
 
   /** Creates a new SwerveDrive. */
   public SwerveDrive() {
@@ -76,7 +92,7 @@ public class SwerveDrive extends SubsystemBase {
     backRightSwerveModule.setAbsEncoderOffset(SwerveDriveConstants.BR_ABS_OFFSET);
     frontRightSwerveModule.setAbsEncoderOffset(SwerveDriveConstants.BR_ABS_OFFSET);
     
-    //TODO: implement & update odometry, do drive feature
+    //TODO: do initial setup of NavX
   }
   /**
    * controls the swerve modules of the drivetrain to try to result a desired drivetrain state
@@ -95,9 +111,23 @@ public class SwerveDrive extends SubsystemBase {
     frontRightSwerveModule.setDesiredState(swerveModuleStates[3]);
   }
 
+  /**
+   * updates the odometry for the field relative position of the robot
+   */
+  public Pose2d updateOdometry() {
+    return driveOdometry.update(
+      NavX.getRotation2d(), 
+      new SwerveModulePosition[] {
+        frontLeftSwerveModule.getModulePosition(),
+        backLeftSwerveModule.getModulePosition(),
+        backRightSwerveModule.getModulePosition(),
+        frontRightSwerveModule.getModulePosition()
+    });
+  }
+
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    drivePose = this.updateOdometry();
   }
 
   @Override

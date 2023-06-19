@@ -49,6 +49,7 @@ public class SwerveModule {
         absEncoder = steerMotor.getAbsoluteEncoder(Type.kDutyCycle);
 
         // drive motor setup
+        driveMotor.restoreFactoryDefaults();
         driveMotor.setSmartCurrentLimit(SwerveModuleConstants.DRIVE_MOTOR_CURRENT_LIMIT);
         // for odometry
         driveMotor.getEncoder().setPosition(0);
@@ -66,6 +67,7 @@ public class SwerveModule {
             SwerveModuleConstants.DRIVE_MOTOR_FF_KV);
 
         // steer motor setup
+        steerMotor.restoreFactoryDefaults();
         steerMotor.setSmartCurrentLimit(SwerveModuleConstants.STEER_MOTOR_CURRENT_LIMIT);
         steerMotor.setVoltage(SwerveModuleConstants.STEER_MOTOR_VOLTAGE);
         steerMotor.getAbsoluteEncoder(Type.kDutyCycle).setInverted(true);

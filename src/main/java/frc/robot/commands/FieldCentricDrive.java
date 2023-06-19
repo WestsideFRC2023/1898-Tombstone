@@ -9,15 +9,16 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-public class RobotCentricDrive extends CommandBase {
+
+public class FieldCentricDrive extends CommandBase {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final SwerveDrive swerveDrive;
 
   /**
-   * Constructs a command that will control the drivetrain in robot-centric mode
+   * Constructs a command that will control the drivetrain in field-centric mode
    * @param subsystem SwerveDrive subsystem used by this command.
    */
-  public RobotCentricDrive(SwerveDrive subsystem) {
+  public FieldCentricDrive(SwerveDrive subsystem) {
     swerveDrive = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -32,10 +33,12 @@ public class RobotCentricDrive extends CommandBase {
   @Override
   public void execute() {
     swerveDrive.drive(
-      new ChassisSpeeds(
-        Units.feetToMeters(swerveDrive.MaxSpeed) * RobotContainer.driverController.getLeftX(), 
-        Units.feetToMeters(swerveDrive.MaxSpeed) * RobotContainer.driverController.getLeftY(), 
-        Units.rotationsToRadians(swerveDrive.MaxTurn) * RobotContainer.driverController.getRightX()));
+      ChassisSpeeds.fromFieldRelativeSpeeds(
+        new ChassisSpeeds(
+          Units.feetToMeters(swerveDrive.MaxSpeed) * RobotContainer.driverController.getLeftX(), 
+          Units.feetToMeters(swerveDrive.MaxSpeed) * RobotContainer.driverController.getLeftY(), 
+          Units.rotationsToRadians(swerveDrive.MaxTurn) * RobotContainer.driverController.getRightX()),
+        swerveDrive.getHeading()));
   }
 
   // Called once the command ends or is interrupted.

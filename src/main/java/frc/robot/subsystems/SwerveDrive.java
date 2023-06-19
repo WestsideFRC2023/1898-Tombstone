@@ -19,7 +19,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.SwerveDriveConstants;;
+import frc.robot.Constants.SwerveDriveConstants;
 
 public class SwerveDrive extends SubsystemBase {
   // swerve module locations
@@ -76,7 +76,10 @@ public class SwerveDrive extends SubsystemBase {
       backRightSwerveModule.getModulePosition(),
       frontRightSwerveModule.getModulePosition()
     });
-  
+  // max speeds
+  public final double MaxSpeed = SwerveDriveConstants.MAX_SPEED_FPS;
+  public final double MaxTurn = SwerveDriveConstants.MAX_TURN_RPS;
+
   // robot pose
   public Pose2d drivePose;
 

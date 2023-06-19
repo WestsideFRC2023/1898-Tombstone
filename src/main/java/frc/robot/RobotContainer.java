@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
+import frc.robot.commands.FieldCentricDrive;
 import frc.robot.commands.RobotCentricDrive;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.SwerveDrive;
@@ -21,19 +22,23 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+
   // The robot's subsystems and commands are defined here...
   private final SwerveDrive driveTrain = new SwerveDrive();
   private final Arm arm = new Arm();
   private final Intake intake = new Intake();
   
+  private final RobotCentricDrive robotCentricDrive = new RobotCentricDrive(driveTrain);
+  private final FieldCentricDrive fieldCentricDrive = new FieldCentricDrive(driveTrain);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  public static CommandXboxController driverController =
+      new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     configureBindings();
+    
   }
 
   /**
@@ -46,6 +51,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    driverController.b().whileFalse(robotCentricDrive);
+    driverController.b().whileTrue(fieldCentricDrive);
+    
   }
 
   /**

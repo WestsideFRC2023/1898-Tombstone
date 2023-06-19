@@ -14,13 +14,14 @@ package frc.robot;
  */
 public final class Constants {
   public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+    public static final int DRIVER_CONTROLLER_PORT = 0;
   }
   
   public static class SwerveDriveConstants {
     // Drivetrain
     public static final double MAX_SPEED_FPS = 	 14.63; // feet per second
-    
+    public static final double MAX_TURN_RPS = 0.5; // rotations per second
+
     /* 
       locations of each swerve module
       FL = Front Left

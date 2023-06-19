@@ -46,19 +46,15 @@ public final class Constants {
     // CAN IDs and PWM Control
     public static final int FL_DRIVE_CANID = 10;
     public static final int FL_STEER_CANID = 11;
-    public static final int FL_ABS_PWMID = 0;
 
     public static final int BL_DRIVE_CANID = 20;
     public static final int BL_STEER_CANID = 21;
-    public static final int BL_ABS_PWMID = 1;
 
     public static final int BR_DRIVE_CANID = 30;
     public static final int BR_STEER_CANID = 31;
-    public static final int BR_ABS_PWMID = 2;
 
     public static final int FR_DRIVE_CANID = 40;
     public static final int FR_STEER_CANID = 41;
-    public static final int FR_ABS_PWMID = 3;
 
     // Absolute Encoder Offsets
     public static final double FL_ABS_OFFSET = 0;

@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -10,7 +12,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants.SwerveModuleConstants;
 
 // Class that is used to represent swerve modules, contains motor control and encoder logic
@@ -19,7 +20,7 @@ public class SwerveModule {
 
     private CANSparkMax driveMotor;
     private CANSparkMax steerMotor;
-    private DutyCycleEncoder absEncoder;
+    private SparkMaxAbsoluteEncoder absEncoder;
 
     private PIDController drivePID;
     private SimpleMotorFeedforward driveFF;
@@ -40,13 +41,12 @@ public class SwerveModule {
      * 
      * @param driveMotor
      * @param steerMotor
-     * @param encoder
      */
-    public SwerveModule(CANSparkMax inDriveMotor, CANSparkMax inSteerMotor, DutyCycleEncoder encoder) {
+    public SwerveModule(CANSparkMax inDriveMotor, CANSparkMax inSteerMotor) {
         // stores inputs
         driveMotor = inDriveMotor;
         steerMotor = inSteerMotor;
-        absEncoder = encoder;
+        absEncoder = steerMotor.getAbsoluteEncoder(Type.kDutyCycle);
 
         // drive motor setup
         driveMotor.setSmartCurrentLimit(SwerveModuleConstants.DRIVE_MOTOR_CURRENT_LIMIT);
@@ -68,6 +68,7 @@ public class SwerveModule {
         // steer motor setup
         steerMotor.setSmartCurrentLimit(SwerveModuleConstants.STEER_MOTOR_CURRENT_LIMIT);
         steerMotor.setVoltage(SwerveModuleConstants.STEER_MOTOR_VOLTAGE);
+        steerMotor.getAbsoluteEncoder(Type.kDutyCycle).setInverted(true);
         steerMotor.getEncoder().setPosition(this.getAbsEncoderRot2d().getRotations()); // aligns relative encoder with absolute encoder
         steerMotor.getEncoder().setPositionConversionFactor(1/SwerveModuleConstants.STEER_MOTOR_GEARREDUCTION);
         steerPID = new ProfiledPIDController(
@@ -78,12 +79,6 @@ public class SwerveModule {
                 SwerveModuleConstants.STEER_MOTOR_TMP_MAXVELOCITY, 
                 SwerveModuleConstants.STEER_MOTOR_TMP_MAXACCELERATION));
         steerPID.setTolerance(SwerveModuleConstants.STEER_MOTOR_PID_TOLERANCE);
-
-        // encoder setup
-        absEncoder.setDutyCycleRange(
-            SwerveModuleConstants.ABS_ENCODER_DUTYCYCLE_MIN, 
-            SwerveModuleConstants.ABS_ENCODER_DUTYCYCLE_MAX);
-        
     }
 
     // Absolute encoder
@@ -93,7 +88,7 @@ public class SwerveModule {
      */
     public void setAbsEncoderOffset(double offset) {
         absEncoderOffset = offset;
-        absEncoder.setPositionOffset(absEncoderOffset);
+        absEncoder.setZeroOffset(absEncoderOffset);
     }
 
     /**
@@ -101,7 +96,7 @@ public class SwerveModule {
      * @return value of the absolute encoder, accounting for rollovers
      */
     public Rotation2d getAbsEncoderRot2d() { // startup angle, zero is forward
-        absEncoderRot2d = Rotation2d.fromRotations((absEncoder.get()) % 1);
+        absEncoderRot2d = Rotation2d.fromRotations((absEncoder.getPosition()) % 1);
         return absEncoderRot2d; // startup angle
     }
 
@@ -162,7 +157,7 @@ public class SwerveModule {
      * Returns an object for interfacing with the Absolute Encoder for the Steer Motor
      * @return <b>CANSparkMax</b> object for interfacing with the Absolute Encoder for the Steer Motor
      */
-    public DutyCycleEncoder getAbsEncoder() {
+    public SparkMaxAbsoluteEncoder getAbsEncoder() {
         return absEncoder;
     }
 
@@ -187,6 +182,4 @@ public class SwerveModule {
                 this.getRelSteerEncoderRot2d().getRotations(), // current 
                 desiredState.angle.getRotations())); // goal
     }
-    
-
 }

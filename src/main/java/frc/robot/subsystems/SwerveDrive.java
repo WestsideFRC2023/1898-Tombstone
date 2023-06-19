@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -16,7 +17,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SwerveDriveConstants;;
@@ -39,23 +39,19 @@ public class SwerveDrive extends SubsystemBase {
   // swerve modules
   private SwerveModule frontLeftSwerveModule = new SwerveModule(
     new CANSparkMax(SwerveDriveConstants.FL_DRIVE_CANID, MotorType.kBrushless),
-    new CANSparkMax(SwerveDriveConstants.FL_STEER_CANID, MotorType.kBrushless),
-    new DutyCycleEncoder(SwerveDriveConstants.FL_ABS_PWMID));
+    new CANSparkMax(SwerveDriveConstants.FL_STEER_CANID, MotorType.kBrushless));
 
   private SwerveModule backLeftSwerveModule = new SwerveModule(
     new CANSparkMax(SwerveDriveConstants.BL_DRIVE_CANID, MotorType.kBrushless),
-    new CANSparkMax(SwerveDriveConstants.BL_STEER_CANID, MotorType.kBrushless),
-    new DutyCycleEncoder(SwerveDriveConstants.BL_ABS_PWMID));
+    new CANSparkMax(SwerveDriveConstants.BL_STEER_CANID, MotorType.kBrushless));
   
   private SwerveModule backRightSwerveModule = new SwerveModule(
     new CANSparkMax(SwerveDriveConstants.BR_DRIVE_CANID, MotorType.kBrushless),
-    new CANSparkMax(SwerveDriveConstants.BR_STEER_CANID, MotorType.kBrushless),
-    new DutyCycleEncoder(SwerveDriveConstants.BR_ABS_PWMID));
+    new CANSparkMax(SwerveDriveConstants.BR_STEER_CANID, MotorType.kBrushless));
   
   private SwerveModule frontRightSwerveModule = new SwerveModule(
     new CANSparkMax(SwerveDriveConstants.FR_DRIVE_CANID, MotorType.kBrushless),
-    new CANSparkMax(SwerveDriveConstants.FR_STEER_CANID, MotorType.kBrushless),
-    new DutyCycleEncoder(SwerveDriveConstants.FR_ABS_PWMID));
+    new CANSparkMax(SwerveDriveConstants.FR_STEER_CANID, MotorType.kBrushless));
 
   // state of all swerve modules
   private SwerveModuleState[] swerveModuleStates;
@@ -123,6 +119,14 @@ public class SwerveDrive extends SubsystemBase {
         backRightSwerveModule.getModulePosition(),
         frontRightSwerveModule.getModulePosition()
     });
+  }
+
+  /**
+   * returns the current heading of drivetrain
+   * @return heading of drivetrain
+   */
+  public Rotation2d getHeading() {
+    return NavX.getRotation2d();
   }
 
   @Override

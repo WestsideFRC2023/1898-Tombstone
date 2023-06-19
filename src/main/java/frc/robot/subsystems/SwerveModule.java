@@ -51,6 +51,7 @@ public class SwerveModule {
             SwerveModuleConstants.DRIVE_MOTOR_PID_KP, 
             SwerveModuleConstants.DRIVE_MOTOR_PID_KI, 
             SwerveModuleConstants.DRIVE_MOTOR_PID_KD);
+        drivePID.setTolerance(SwerveModuleConstants.DRIVE_MOTOR_PID_TOLERANCE);
         driveFF = new SimpleMotorFeedforward(
             SwerveModuleConstants.DRIVE_MOTOR_FF_KS,
             SwerveModuleConstants.DRIVE_MOTOR_FF_KA,
@@ -68,6 +69,7 @@ public class SwerveModule {
             new TrapezoidProfile.Constraints(
                 SwerveModuleConstants.STEER_MOTOR_TMP_MAXVELOCITY, 
                 SwerveModuleConstants.STEER_MOTOR_TMP_MAXACCELERATION));
+        steerPID.setTolerance(SwerveModuleConstants.STEER_MOTOR_PID_TOLERANCE);
 
         // encoder setup
         absEncoder.setDutyCycleRange(
@@ -103,29 +105,54 @@ public class SwerveModule {
         return Rotation2d.fromRotations(steerMotor.getEncoder().getPosition() % 1);
     }
 
-    // Module State
+    
+
+    // Getters (for debugging)
     /**
-     * set the desired state of the module from the drivetrain
-     * @param inModuleState desired state of the module
+     * Returns an object for interfacing with the Sparkmax for the Drive Motor
+     * @return <b>CANSparkMax</b> object for interfacing with the Sparkmax for the Drive Motor
      */
-    public void setDesiredState(SwerveModuleState inModuleState) {
-        desiredState = inModuleState;
+    public CANSparkMax getDriveMotor() {
+        return driveMotor;
     }
 
     /**
-     * uses a profiled PID Controller to control the steer motor to go the desired angle using a trapezoidal motion profile and a PID Controller
-     * <p>uses a feedforward Controller and a PID Controller to control the drive motor to go at a desired speed
+     * Returns an object for interfacing with the Sparkmax for the Steer Motor
+     * @return <b>CANSparkMax</b> object for interfacing with the Sparkmax for the Steer Motor
      */
-    public void goToState() {
+    public CANSparkMax getSteerMotor() {
+        return steerMotor;
+    }
+
+    /**
+     * Returns an object for interfacing with the Absolute Encoder for the Steer Motor
+     * @return <b>CANSparkMax</b> object for interfacing with the Absolute Encoder for the Steer Motor
+     */
+    public DutyCycleEncoder getAbsEncoder() {
+        return absEncoder;
+    }
+
+    // The important method
+    /**
+     * set the desired state of the module from the drivetrain (state does not need to be optimized)
+     * <p>uses a profiled PID Controller to control the steer motor to go the desired angle using a trapezoidal motion profile and a PID Controller
+     * <p>uses a feedforward Controller and a PID Controller to control the drive motor to go at a desired speed
+     * @param inModuleState desired state of the module
+     */
+    public void setDesiredState(SwerveModuleState inModuleState) {
+        desiredState = SwerveModuleState.optimize(inModuleState, this.getRelSteerEncoderRot2d());
+
         driveMotor.setVoltage( // sets voltage of drive motor
             drivePID.calculate(
                 driveMotor.getEncoder().getVelocity(), Units.metersToFeet(desiredState.speedMetersPerSecond)) // pid
-            +
-            driveFF.calculate(Units.metersToFeet(desiredState.speedMetersPerSecond))); // feedforward
+                +
+                driveFF.calculate(Units.metersToFeet(desiredState.speedMetersPerSecond))); // feedforward
                 
         steerMotor.set( // sets speed of steering motor
             steerPID.calculate(
                 this.getRelSteerEncoderRot2d().getRotations(), // current 
                 desiredState.angle.getRotations())); // goal
     }
+    
+
 }

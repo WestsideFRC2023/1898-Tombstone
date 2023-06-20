@@ -15,6 +15,10 @@ package frc.robot;
 public final class Constants {
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
+
+    public static final double HEADING_DEADBAND = 0;
+    public static final double TURN_DEADBAND = 0;
+
   }
   
   public static class SwerveDriveConstants {
@@ -79,6 +83,7 @@ public final class Constants {
     public static final double DRIVE_MOTOR_FF_KS = 0;
     public static final double DRIVE_MOTOR_FF_KV = 0;
     public static final double DRIVE_MOTOR_FF_KA = 0;
+    public static final double DRIVE_MOTOR_FF_TOLERANCE = 0;
 
     public static final int STEER_MOTOR_CURRENT_LIMIT = 20;
     public static final double STEER_MOTOR_GEARREDUCTION = 9424/203;

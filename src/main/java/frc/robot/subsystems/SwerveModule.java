@@ -177,7 +177,8 @@ public class SwerveModule {
             drivePID.calculate(
                 driveMotor.getEncoder().getVelocity(), Units.metersToFeet(desiredState.speedMetersPerSecond)) // pid
                 +
-                driveFF.calculate(Units.metersToFeet(desiredState.speedMetersPerSecond))); // feedforward
+                (Math.abs(driveFF.calculate(Units.metersToFeet(desiredState.speedMetersPerSecond))) > SwerveModuleConstants.DRIVE_MOTOR_FF_TOLERANCE ? // applies FF tolerance/deadband
+                    driveFF.calculate(Units.metersToFeet(desiredState.speedMetersPerSecond)) : 0)); // feedforward
                 
         steerMotor.set( // sets speed of steering motor
             steerPID.calculate(

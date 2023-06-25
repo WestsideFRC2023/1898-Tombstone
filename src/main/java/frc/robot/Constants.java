@@ -21,4 +21,36 @@ public final class Constants {
   {
     public static final int kSparkMaxPort = 61;
   }
+
+  public static class ArmConstants {
+    public static final int CIM_MASTER_CANID = 50;
+    public static final int CIM_SLAVE_CANID = 51;
+    public static final int FAL_CANID = 60;
+
+    public static final double BASE_RATIO = 80;
+    public static final double WRIST_RATIO = 60;
+
+    public static final int BASE_KP = 0;
+    public static final int BASE_KI = 0;
+    public static final int BASE_KD = 0;
+
+    public static final int BASE_MAX_V = 0;
+    public static final int BASE_MAX_A = 0;
+
+    public static final int WRIST_START_POS = 0;
+    public static final double BASE_START_POS = 0; //absolute encoder position
+    public static final int WRIST_STOWED_POS = 0;
+    public static final int WRIST_ERROR_THRESHOLD = 0;
+    public static final int BASE_ERROR_THRESHOLD = 0;
+    
+    public static final double WRIST_kF = 0;
+    public static final double WRIST_kP = 0;
+    public static final double WRIST_kI = 0;
+    public static final double WRIST_kD = 0;
+
+    public static final double WRIST_MAX_V = 0;
+    public static final double WRIST_MAX_A = 0;
+    public static final int WRIST_CURVE_STR = 0;
+    
+  }
 }

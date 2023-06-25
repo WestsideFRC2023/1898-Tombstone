@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 //import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
@@ -22,11 +25,15 @@ import frc.robot.Constants.ArmConstants;
 public class Arm extends SubsystemBase {
 
   private CANSparkMax baseMotor;
-  private CANSparkMax baseMotor2;
+  private CANSparkMax slaveMotor;
   private WPI_TalonFX wristMotor;
 
   private SparkMaxPIDController basePID;
   private SparkMaxAbsoluteEncoder baseAbsEncoder;
+  
+  private DigitalInput wristEncInput;
+  private DutyCycleEncoder wristAbsEncoder;
+
 
   public double baseTarget;
   public double wristTarget;
@@ -34,25 +41,24 @@ public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
   public Arm() {
     //set up motors
-    // brushless or brushed?
-    //please help
-    baseMotor = new CANSparkMax(ArmConstants.CIM_MASTER_CANID, MotorType.kBrushless); 
-    baseMotor2 = new CANSparkMax(ArmConstants.CIM_SLAVE_CANID, MotorType.kBrushless);
+    //brushed (CIMs)
+    baseMotor = new CANSparkMax(ArmConstants.CIM_MASTER_CANID, MotorType.kBrushed); 
+    slaveMotor = new CANSparkMax(ArmConstants.CIM_SLAVE_CANID, MotorType.kBrushed);
     wristMotor = new WPI_TalonFX(ArmConstants.FAL_CANID);
     baseAbsEncoder = baseMotor.getAbsoluteEncoder(Type.kDutyCycle);
 
 
     //configure CANSparkMax motors
     baseMotor.setIdleMode(IdleMode.kBrake);
-    baseMotor.setSmartCurrentLimit(20, 25); //change if needed
-    //please help
+    baseMotor.setSmartCurrentLimit(20,30 ); //change if needed
     baseMotor.burnFlash();
 
-    baseMotor2.setIdleMode(IdleMode.kBrake);
-    baseMotor2.setSmartCurrentLimit(20, 25); //change if needed
+    slaveMotor.setIdleMode(IdleMode.kBrake);
+    slaveMotor.setSmartCurrentLimit(20, 30); //change if needed
+    
     //please help
-    baseMotor2.follow(baseMotor, false); // invert if needed
-    baseMotor2.burnFlash();
+    slaveMotor.follow(baseMotor, false);
+    slaveMotor.burnFlash();
     //smart motion (I believe this is motion magic)
     //please refer to https://github.com/REVrobotics/SPARK-MAX-Examples/blob/master/Java/Smart%20Motion%20Example/src/main/java/frc/robot/Robot.java
     basePID.setP(ArmConstants.BASE_KP);
@@ -73,6 +79,9 @@ public class Arm extends SubsystemBase {
     wristMotor.configMotionCruiseVelocity(ArmConstants.WRIST_MAX_V);
     wristMotor.configMotionAcceleration(ArmConstants.WRIST_MAX_A);
     wristMotor.configMotionSCurveStrength(ArmConstants.WRIST_CURVE_STR);
+    
+    wristEncInput = new DigitalInput(ArmConstants.WRIST_ABS_ENC_ID);
+    wristAbsEncoder = new DutyCycleEncoder(wristEncInput);
   }
 
   /**
@@ -91,6 +100,7 @@ public class Arm extends SubsystemBase {
   public void passTargets() {
     //baseMotor.setVoltage(to a value calculated by the pid in smart motion mode probably);
     //please help
+    basePID.setReference(baseTarget, CANSparkMax.ControlType.kSmartMotion);
     wristMotor.set(TalonFXControlMode.MotionMagic, wristTarget);
   }
 
@@ -98,10 +108,8 @@ public class Arm extends SubsystemBase {
    * checks if wrist is in the arm or not
    */
   public boolean wristStowed() {
-    return (Math.abs(wristMotor.getSelectedSensorPosition() - ArmConstants.WRIST_STOWED_POS) 
+    return (Math.abs(wristAbsEncoder.get() - ArmConstants.WRIST_STOWED_POS) 
             < ArmConstants.WRIST_ERROR_THRESHOLD);
-    //do we have to involve gear ratio in this somehow
-    //please help
   }
 
   /**

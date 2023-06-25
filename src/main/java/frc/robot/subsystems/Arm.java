@@ -6,8 +6,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Encoder;
-//import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
@@ -138,6 +136,42 @@ public class Arm extends SubsystemBase {
   public void stowWrist() {
     baseMotor.stopMotor();
     wristMotor.set(TalonFXControlMode.MotionMagic, ArmConstants.WRIST_STOWED_POS);
+  }
+
+  public void armHigh()
+  {
+    setTargets(ArmConstants.BASE_HIGH_CONSTANT, ArmConstants.WRIST_HIGH_CONSTANT);
+    passTargets();
+  }
+
+  public void armMidCone()
+  {
+    setTargets(ArmConstants.BASE_MID_CONE_CONSTANT, ArmConstants.WRIST_MID_CONE_CONSTANT);
+    passTargets();
+  }
+
+  public void armMidCube()
+  {
+    setTargets(ArmConstants.BASE_MID_CUBE_CONSTANT, ArmConstants.WRIST_MID_CUBE_CONSTANT);
+    passTargets();
+  }
+
+  public void armIntakeCone()
+  {
+    setTargets(ArmConstants.BASE_INTAKE_CONE_CONSTANT, ArmConstants.WRIST_INTAKE_CONE_CONSTANT);
+    passTargets();
+  }
+
+  public void armIntakeCube()
+  {
+    setTargets(ArmConstants.BASE_INTAKE_CUBE_CONSTANT, ArmConstants.WRIST_INTAKE_CUBE_CONSTANT);
+    passTargets();
+  }
+
+  public void armStow()
+  {
+    setTargets(ArmConstants.BASE_START_POS, ArmConstants.WRIST_START_POS);
+    passTargets();
   }
 
 }

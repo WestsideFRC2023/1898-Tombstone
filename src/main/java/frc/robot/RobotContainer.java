@@ -12,6 +12,7 @@ import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -40,6 +41,37 @@ public class RobotContainer {
   private final JoystickButton Intake_LB = new JoystickButton(m_opController, XboxController.Button.kLeftBumper.value);
   private final JoystickButton Outtake_RB = new JoystickButton(m_opController, XboxController.Button.kRightBumper.value);
 
+  private final JoystickButton ArmHigh = new JoystickButton(m_opController, XboxController.Button.kY.value);
+  private final JoystickButton ArmMid = new JoystickButton(m_opController, XboxController.Button.kB.value);
+  private final JoystickButton ArmIntake = new JoystickButton(m_opController, XboxController.Button.kA.value);
+
+
+  // ARM Commands to handle Cone/Cube If Statement
+  // If any POV button is pressed, then the arm will go into cube Mode
+  // Otherwise the Arm is in Cone Mode
+  public CommandBase ArmMid()
+  {
+    if (m_opController.getPOV() != -1)
+    {
+      return arm.runOnce(() -> arm.armMidCube());
+    }
+    else
+    {
+      return arm.runOnce(() -> arm.armMidCone());
+    }
+  }
+  public CommandBase ArmIntake()
+  {
+    if (m_opController.getPOV() != -1)
+    {
+      return arm.runOnce(() -> arm.armIntakeCube());
+    }
+    else
+    {
+      return arm.runOnce(() -> arm.armIntakeCone());
+    }
+  }
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     configureBindings();
@@ -61,6 +93,14 @@ public class RobotContainer {
     Outtake_RB.onTrue(new InstantCommand(() -> intake.outtake()));
     Outtake_RB.onFalse(new InstantCommand(() -> intake.stop()));
 
+    ArmHigh.onTrue(new InstantCommand(() -> arm.armHigh()));
+    ArmHigh.onFalse(new InstantCommand(() -> arm.armStow()));
+
+    ArmMid.onTrue(ArmMid());
+    ArmMid.onFalse(new InstantCommand(() -> arm.armStow()));
+
+    ArmIntake.onTrue(ArmIntake());
+    ArmIntake.onFalse(new InstantCommand(() -> arm.armStow()));
   }
 
   /**

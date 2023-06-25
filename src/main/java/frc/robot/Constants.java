@@ -53,5 +53,19 @@ public final class Constants {
     public static final double WRIST_MAX_A = 0;
     public static final int WRIST_CURVE_STR = 0;
     
+    public static final double WRIST_HIGH_CONSTANT = 0;
+    public static final double BASE_HIGH_CONSTANT = 0;
+
+    public static final double WRIST_MID_CONE_CONSTANT = 0;
+    public static final double BASE_MID_CONE_CONSTANT = 0;
+    
+    public static final double WRIST_MID_CUBE_CONSTANT = 0;
+    public static final double BASE_MID_CUBE_CONSTANT = 0;
+
+    public static final double WRIST_INTAKE_CONE_CONSTANT = 0;
+    public static final double BASE_INTAKE_CONE_CONSTANT = 0;
+    
+    public static final double WRIST_INTAKE_CUBE_CONSTANT = 0;
+    public static final double BASE_INTAKE_CUBE_CONSTANT = 0;
   }
 }

@@ -25,7 +25,7 @@ public final class Constants {
   public static class ArmConstants {
     public static final int CIM_MASTER_CANID = 50;
     public static final int CIM_SLAVE_CANID = 51;
-    public static final int FAL_CANID = 60;
+    public static final int WRIST_CANID = 60;
     public static final int WRIST_ABS_ENC_ID = 0;
 
     public static final double BASE_RATIO = 80;

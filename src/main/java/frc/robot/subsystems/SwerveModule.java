@@ -16,6 +16,10 @@ import frc.robot.Constants.SwerveModuleConstants;
 
 // Class that is used to represent swerve modules, contains motor control and encoder logic
 // uses rotation2d for input from encoders
+/*
+ *  7/4/2023
+ *  Greg - changed the main reference for the direction of the swerve module from the relative encoder to the absolute encoder 
+ */
 public class SwerveModule {
 
     private CANSparkMax driveMotor;
@@ -71,8 +75,10 @@ public class SwerveModule {
         steerMotor.setSmartCurrentLimit(SwerveModuleConstants.STEER_MOTOR_CURRENT_LIMIT);
         steerMotor.setVoltage(SwerveModuleConstants.STEER_MOTOR_VOLTAGE);
         steerMotor.getAbsoluteEncoder(Type.kDutyCycle).setInverted(true);
-        steerMotor.getEncoder().setPosition(this.getAbsEncoderRot2d().getRotations()); // aligns relative encoder with absolute encoder
+        // 2 lines below non-critical
+        this.alignRelEncoderToAbsEncoder(); // aligns relative encoder with absolute encoder
         steerMotor.getEncoder().setPositionConversionFactor(1/SwerveModuleConstants.STEER_MOTOR_GEARREDUCTION);
+
         steerPID = new ProfiledPIDController(
             SwerveModuleConstants.STEER_MOTOR_PID_KP, 
             SwerveModuleConstants.STEER_MOTOR_PID_KI, 
@@ -97,13 +103,14 @@ public class SwerveModule {
      * This should only be used on startup, use the relative encoder for all other times
      * @return value of the absolute encoder, accounting for rollovers
      */
-    public Rotation2d getAbsEncoderRot2d() { // startup angle, zero is forward
+    public Rotation2d getAbsEncoderRot2d() { // angle, zero is forward
         absEncoderRot2d = Rotation2d.fromRotations((absEncoder.getPosition()) % 1);
-        return absEncoderRot2d; // startup angle
+        return absEncoderRot2d; // angle
     }
 
     // Relative steer encoder
     /**
+     * <b> DEPRECATED</b> for kinematics, use {@link #getAbsEncoderRot2d}
      * @return Rotation2d of the angle of the wheel through the relative encoder on the motor, accounting for rollover and gear ratio
      */
     public Rotation2d getRelSteerEncoderRot2d() {
@@ -118,14 +125,14 @@ public class SwerveModule {
     public SwerveModulePosition getModulePosition() {
         modulePosition = new SwerveModulePosition(
             Units.feetToMeters(driveMotor.getEncoder().getPosition()), // distance the wheel traveled in meters
-            this.getRelSteerEncoderRot2d()); // angle of module
+            this.getAbsEncoderRot2d()); // angle of module
         return modulePosition;
     }
 
     /**
-     * zeros the position readout of the encoders of the drive and steer motors
+     * zeros the position readout of the relative encoders of the drive and steer motors
      * <p><b>Note</B> This will make the steer encoder think the current position is zero, so it may misalign its readout to the absolute encoder
-     * <p> Initial alignment an reset is already done when the module is constructed
+     * <p> Initial alignment and reset is already done when the module is constructed
      */
     public void resetModulePosition() {
         driveMotor.getEncoder().setPosition(0);
@@ -171,7 +178,7 @@ public class SwerveModule {
      * @param inModuleState desired state of the module
      */
     public void setDesiredState(SwerveModuleState inModuleState) {
-        desiredState = SwerveModuleState.optimize(inModuleState, this.getRelSteerEncoderRot2d());
+        desiredState = SwerveModuleState.optimize(inModuleState, this.getAbsEncoderRot2d());
 
         driveMotor.setVoltage( // sets voltage of drive motor
             drivePID.calculate(
@@ -182,7 +189,7 @@ public class SwerveModule {
                 
         steerMotor.set( // sets speed of steering motor
             steerPID.calculate(
-                this.getRelSteerEncoderRot2d().getRotations(), // current 
+                this.getAbsEncoderRot2d().getRotations(), // current 
                 desiredState.angle.getRotations())); // goal
     }
 }

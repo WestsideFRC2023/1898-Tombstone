@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
@@ -118,7 +116,7 @@ public class Arm extends SubsystemBase {
    * checks if wrist is in the arm or not
    */
   public boolean wristStowed() {
-    return (Math.abs(wristAbsEncoder.getPosition()  - ArmConstants.WRIST_STOWED_POS) 
+    return (Math.abs(wristAbsEncoder.getPosition()  - ArmConstants.WRIST_STOW_POS) 
             < ArmConstants.WRIST_ERROR_THRESHOLD);
   }
 
@@ -182,7 +180,7 @@ public class Arm extends SubsystemBase {
 
   public void armStow()
   {
-    setTargets(ArmConstants.BASE_START_POS, ArmConstants.WRIST_START_POS);
+    setTargets(ArmConstants.BASE_STOW_POS, ArmConstants.WRIST_STOW_POS);
     passTargets();
   }
 

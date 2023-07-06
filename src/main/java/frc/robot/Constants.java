@@ -35,18 +35,17 @@ public final class Constants {
     public static final double BASE_RATIO = 80;
     public static final double WRIST_RATIO = 60;
 
-    public static final int BASE_KP = 0;
-    public static final int BASE_KI = 0;
-    public static final int BASE_KD = 0;
+    public static final double BASE_KP = 0;
+    public static final double BASE_KI = 0;
+    public static final double BASE_KD = 0;
 
     public static final int BASE_MAX_V = 0;
     public static final int BASE_MAX_A = 0;
 
-    public static final int WRIST_START_POS = 0;
-    public static final double BASE_START_POS = 0; //absolute encoder position
-    public static final int WRIST_STOWED_POS = 0;
-    public static final int WRIST_ERROR_THRESHOLD = 0;
-    public static final int BASE_ERROR_THRESHOLD = 0;
+    public static final double BASE_STOW_POS = 0; //absolute encoder position
+    public static final double WRIST_STOW_POS = 0;
+    public static final double WRIST_ERROR_THRESHOLD = 0;
+    public static final double BASE_ERROR_THRESHOLD = 0;
     
     public static final double WRIST_kF = 0;
     public static final double WRIST_kP = 0;

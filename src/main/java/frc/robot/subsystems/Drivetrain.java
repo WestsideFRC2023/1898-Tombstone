@@ -31,7 +31,7 @@ public class Drivetrain extends SubsystemBase {
     SwerveConstants.LEFT_FRONT_DRIVE_ID, 
     SwerveConstants.LEFT_FRONT_TURN_ID, 
     true, 
-    false,
+    false, //TurnMotor was Reveresed. Original value was True
     SwerveConstants.LEFT_FRONT_OFFSET, 
     false);
 
@@ -39,7 +39,7 @@ public class Drivetrain extends SubsystemBase {
     SwerveConstants.RIGHT_FRONT_DRIVE_ID, 
     SwerveConstants.RIGHT_FRONT_TURN_ID, 
     false, 
-    false,
+    false, //TurnMotor was Reveresed. Original value was True
     SwerveConstants.RIGHT_FRONT_OFFSET, 
     false);
 
@@ -47,7 +47,7 @@ public class Drivetrain extends SubsystemBase {
     SwerveConstants.LEFT_BACK_DRIVE_ID, 
     SwerveConstants.LEFT_BACK_TURN_ID, 
     true, 
-    false, 
+    false, //TurnMotor was Reveresed. Original value was True
     SwerveConstants.LEFT_BACK_OFFSET, 
     false);
 
@@ -55,7 +55,7 @@ public class Drivetrain extends SubsystemBase {
     SwerveConstants.RIGHT_BACK_DRIVE_ID, 
     SwerveConstants.RIGHT_BACK_TURN_ID, 
     false, 
-    false, 
+    false, //TurnMotor was Reveresed. Original value was True
     SwerveConstants.RIGHT_BACK_OFFSET, 
     false);
 

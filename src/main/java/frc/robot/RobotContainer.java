@@ -6,15 +6,15 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
-import frc.robot.commands.RobotCentricDrive;
+import frc.robot.commands.SwerveDrive;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -26,15 +26,17 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final SwerveDrive driveTrain = new SwerveDrive();
+  public static final Drivetrain drivetrain = Drivetrain.getInstance();
   private final Arm arm = new Arm();
   private final Intake intake = new Intake();
+  private SendableChooser<String> autoChooser = new SendableChooser<>();
   
 
   // XBOX Controller Definition
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
-  private final XboxController m_opController =
+  public static final XboxController driverController =
+      new XboxController(OperatorConstants.kDriverControllerPort);
+
+  public static final XboxController m_opController =
       new XboxController(OperatorConstants.kOpControllerPort);
 
   // XBOX Button Maps
@@ -45,6 +47,7 @@ public class RobotContainer {
   private final JoystickButton ArmMid = new JoystickButton(m_opController, XboxController.Button.kB.value);
   private final JoystickButton ArmIntake = new JoystickButton(m_opController, XboxController.Button.kA.value);
 
+  private final JoystickButton resetHeading_Start = new JoystickButton(driverController, XboxController.Button.kA.value);
 
   // ARM Commands to handle Cone/Cube If Statement
   // If any POV button is pressed, then the arm will go into cube Mode
@@ -73,8 +76,10 @@ public class RobotContainer {
   }
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
+  public RobotContainer()
+  {
     configureBindings();
+    drivetrain.setDefaultCommand(new SwerveDrive());
   }
 
   /**
@@ -88,6 +93,8 @@ public class RobotContainer {
    */
   private void configureBindings()
   {
+    resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
+
     Intake_LB.onTrue(new InstantCommand(() -> intake.pickUp()));
     Intake_LB.onFalse(new InstantCommand(() -> intake.hold()));
     Outtake_RB.onTrue(new InstantCommand(() -> intake.outtake()));
@@ -109,6 +116,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return Autos.exampleAuto(driveTrain);
+    return new InstantCommand(); 
   }
 }

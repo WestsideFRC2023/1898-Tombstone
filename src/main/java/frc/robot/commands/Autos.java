@@ -5,14 +5,14 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public final class Autos {
   /** Example static factory for an autonomous command. */
   public static CommandBase exampleAuto(SwerveDrive subsystem) {
-    return Commands.sequence(subsystem.exampleMethodCommand(), new RobotCentricDrive(subsystem));
+    return new InstantCommand();
   }
 
   private Autos() {

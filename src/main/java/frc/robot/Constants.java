@@ -131,8 +131,8 @@ public final class Constants {
     public static final double AUTO_kP_TURN = 0; //2.4
 
     //Swerve Kinematics
-    public static final double TRACK_WIDTH = Units.inchesToMeters(16.75);
-    public static final double WHEEL_BASE = Units.inchesToMeters(24.75);
+    public static final double TRACK_WIDTH = Units.inchesToMeters(23.5);
+    public static final double WHEEL_BASE = Units.inchesToMeters(23.5);
     public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
         new Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2),
         new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2),

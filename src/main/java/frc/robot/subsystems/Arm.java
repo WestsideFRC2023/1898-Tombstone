@@ -55,6 +55,7 @@ public class Arm extends SubsystemBase {
     slaveMotor.burnFlash();
     //smart motion (I believe this is motion magic)
     //please refer to https://github.com/REVrobotics/SPARK-MAX-Examples/blob/master/Java/Smart%20Motion%20Example/src/main/java/frc/robot/Robot.java
+    basePID = baseMotor.getPIDController();
     basePID.setP(ArmConstants.BASE_KP);
     basePID.setI(ArmConstants.BASE_KI);
     basePID.setD(ArmConstants.BASE_KD);
@@ -68,6 +69,7 @@ public class Arm extends SubsystemBase {
 
     //smart motion (I believe this is motion magic)
     //please refer to https://github.com/REVrobotics/SPARK-MAX-Examples/blob/master/Java/Smart%20Motion%20Example/src/main/java/frc/robot/Robot.java
+    wristPID = wristMotor.getPIDController();
     wristPID.setP(ArmConstants.BASE_KP);
     wristPID.setI(ArmConstants.BASE_KI);
     wristPID.setD(ArmConstants.BASE_KD);

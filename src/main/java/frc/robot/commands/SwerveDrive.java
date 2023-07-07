@@ -33,15 +33,11 @@ public class SwerveDrive extends CommandBase {
       //   !RobotContainer.driverController.getRawButton(XboxController.Button.kB.value),
       //   false,
       //   true);
-      RobotContainer.drivetrain.swerveDrive(
+      RobotContainer.drivetrain.drive(
         RobotContainer.driverController.getLeftY(), 
         RobotContainer.driverController.getLeftX(), 
         RobotContainer.driverController.getRightX(),
-        -RobotContainer.driverController.getRightY(),
         !RobotContainer.driverController.getRawButton(XboxController.Button.kB.value),
-        RobotContainer.driverController.getRawButton(XboxController.Button.kRightBumper.value),
-        RobotContainer.driverController.getRawButton(XboxController.Button.kLeftBumper.value),
-        false,
         true);
   }
 

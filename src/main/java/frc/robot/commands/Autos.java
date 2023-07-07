@@ -73,7 +73,7 @@ public final class Autos
       new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(trajectory))), 
       new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
       driveOnCS,
-      new AutoBalance(),
+      // new AutoBalance(),
       new InstantCommand(() -> RobotContainer.drivetrain.stopModules())
     );
   }

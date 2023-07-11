@@ -96,7 +96,7 @@ public class RobotContainer {
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
 
     Intake_LB.onTrue(new InstantCommand(() -> intake.pickUp()));
-    Intake_LB.onFalse(new InstantCommand(() -> intake.hold()));
+    Intake_LB.onFalse(new InstantCommand(() -> intake.stop()));
     Outtake_RB.onTrue(new InstantCommand(() -> intake.outtake()));
     Outtake_RB.onFalse(new InstantCommand(() -> intake.stop()));
 
@@ -116,6 +116,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new InstantCommand(); 
+    return Autos.bumpAndDrive(); 
   }
 }

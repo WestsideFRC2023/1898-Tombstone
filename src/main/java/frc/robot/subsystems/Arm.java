@@ -11,8 +11,10 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkMaxRelativeEncoder;
 
 import frc.robot.Constants.ArmConstants;
 
@@ -26,7 +28,7 @@ public class Arm extends SubsystemBase {
   private SparkMaxAbsoluteEncoder baseAbsEncoder;
   
   private SparkMaxPIDController wristPID;
-  private SparkMaxAbsoluteEncoder wristAbsEncoder;
+  private RelativeEncoder wristEncoder;
 
   public double baseTarget;
   public double wristTarget;
@@ -39,7 +41,7 @@ public class Arm extends SubsystemBase {
     slaveMotor = new CANSparkMax(ArmConstants.CIM_SLAVE_CANID, MotorType.kBrushed);
     wristMotor = new CANSparkMax(ArmConstants.WRIST_CANID, MotorType.kBrushless);
     baseAbsEncoder = baseMotor.getAbsoluteEncoder(Type.kDutyCycle);
-    wristAbsEncoder = wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
+    wristEncoder = wristMotor.getEncoder();
 
 
     //configure CANSparkMax motors
@@ -70,28 +72,11 @@ public class Arm extends SubsystemBase {
     //smart motion (I believe this is motion magic)
     //please refer to https://github.com/REVrobotics/SPARK-MAX-Examples/blob/master/Java/Smart%20Motion%20Example/src/main/java/frc/robot/Robot.java
     wristPID = wristMotor.getPIDController();
-    wristPID.setP(ArmConstants.BASE_KP);
-    wristPID.setI(ArmConstants.BASE_KI);
-    wristPID.setD(ArmConstants.BASE_KD);
+    wristPID.setP(ArmConstants.WRIST_kP);
+    wristPID.setI(ArmConstants.WRIST_kI);
+    wristPID.setD(ArmConstants.WRIST_kD);
     wristPID.setSmartMotionMaxVelocity(ArmConstants.BASE_MAX_V, 0);
     wristPID.setSmartMotionMaxAccel(ArmConstants.BASE_MAX_A, 0);
-
-    //OLD Code for the wrist joint with a falcon
-    // //configure TalonFX motor (wrist)
-    // wristMotor.setSelectedSensorPosition(ArmConstants.WRIST_START_POS);
-    // wristMotor.setNeutralMode(NeutralMode.Brake);
-    // //motion magic
-    // wristMotor.config_kF(0, ArmConstants.WRIST_kF);
-    // wristMotor.config_kP(0, ArmConstants.WRIST_kP);
-    // wristMotor.config_kI(0, ArmConstants.WRIST_kI);
-    // wristMotor.config_kD(0, ArmConstants.WRIST_kD);
-
-    // wristMotor.configMotionCruiseVelocity(ArmConstants.WRIST_MAX_V);
-    // wristMotor.configMotionAcceleration(ArmConstants.WRIST_MAX_A);
-    // wristMotor.configMotionSCurveStrength(ArmConstants.WRIST_CURVE_STR);
-    
-    // wristEncInput = new DigitalInput(ArmConstants.WRIST_ABS_ENC_ID);
-    // wristAbsEncoder = new DutyCycleEncoder(wristEncInput);
   }
 
   /**
@@ -110,15 +95,15 @@ public class Arm extends SubsystemBase {
   public void passTargets() {
     //baseMotor.setVoltage(to a value calculated by the pid in smart motion mode probably);
     //please help
-    basePID.setReference(baseTarget, CANSparkMax.ControlType.kSmartMotion);
-    wristPID.setReference(wristTarget, CANSparkMax.ControlType.kSmartMotion);
+    basePID.setReference(baseTarget, CANSparkMax.ControlType.kPosition);
+    wristPID.setReference(wristTarget, CANSparkMax.ControlType.kPosition);
   }
 
   /** 
    * checks if wrist is in the arm or not
    */
   public boolean wristStowed() {
-    return (Math.abs(wristAbsEncoder.getPosition()  - ArmConstants.WRIST_STOW_POS) 
+    return (Math.abs(wristEncoder.getPosition()  - ArmConstants.WRIST_STOW_POS) 
             < ArmConstants.WRIST_ERROR_THRESHOLD);
   }
 
@@ -136,7 +121,7 @@ public class Arm extends SubsystemBase {
    * checks if wrist is at target Position
    */
   public boolean wristAtTarget() {
-    return (Math.abs(wristAbsEncoder.getPosition() - wristTarget) 
+    return (Math.abs(wristEncoder.getPosition() - wristTarget) 
             < ArmConstants.WRIST_ERROR_THRESHOLD);
     //do we have to involve gear ratio in this somehow
     //please help
@@ -147,7 +132,7 @@ public class Arm extends SubsystemBase {
    */
   public void stowWrist() {
     baseMotor.stopMotor();
-    wristPID.setReference(wristTarget, CANSparkMax.ControlType.kSmartMotion);
+    wristPID.setReference(wristTarget, CANSparkMax.ControlType.kPosition);
   }
 
   public void armHigh()
@@ -192,7 +177,7 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("Base Encoder", baseAbsEncoder.getPosition());
     SmartDashboard.putNumber("Base Target", baseTarget);
 
-    SmartDashboard.putNumber("Wrist Encoder", wristAbsEncoder.getPosition());
+    SmartDashboard.putNumber("Wrist Encoder", wristEncoder.getPosition());
     SmartDashboard.putNumber("Wrist Target", wristTarget);
   }
 

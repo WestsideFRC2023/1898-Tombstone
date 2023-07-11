@@ -51,15 +51,15 @@ public final class Constants {
     public static final double BASE_ERROR_THRESHOLD = 0;
     
     public static final double WRIST_kF = 0;
-    public static final double WRIST_kP = 0;
+    public static final double WRIST_kP = 0.025;
     public static final double WRIST_kI = 0;
-    public static final double WRIST_kD = 0;
+    public static final double WRIST_kD = 0.001;
 
     public static final double WRIST_MAX_V = 0;
     public static final double WRIST_MAX_A = 0;
     public static final int WRIST_CURVE_STR = 0;
     
-    public static final double WRIST_HIGH_CONSTANT = 0;
+    public static final double WRIST_HIGH_CONSTANT = 20;
     public static final double BASE_HIGH_CONSTANT = 0;
 
     public static final double WRIST_MID_CONE_CONSTANT = 0;
@@ -202,8 +202,8 @@ public final class Constants {
     
     public static final double KP_TURNING = 0.5;
 
-    public static final double DRIVETRAIN_MAX_SPEED = 4.6;
-    public static final double DRIVETRAIN_MAX_ANGULAR_SPEED = 3.5 * Math.PI;
+    public static final double DRIVETRAIN_MAX_SPEED = 4.6 / 2;
+    public static final double DRIVETRAIN_MAX_ANGULAR_SPEED = 3.5 * Math.PI / 4;
 
     //Teleop constraints
     public static final double TELE_DRIVE_MAX_SPEED = DRIVETRAIN_MAX_SPEED * 1;

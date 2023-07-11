@@ -34,11 +34,22 @@ public class SwerveDrive extends CommandBase {
       //   false,
       //   true);
       RobotContainer.drivetrain.drive(
-        RobotContainer.driverController.getLeftY(), 
-        RobotContainer.driverController.getLeftX(), 
-        RobotContainer.driverController.getRightX(),
+        deadband(-RobotContainer.driverController.getLeftY()), 
+        deadband(-RobotContainer.driverController.getLeftX()), 
+        deadband(RobotContainer.driverController.getRightX()),
         !RobotContainer.driverController.getRawButton(XboxController.Button.kB.value),
         true);
+  }
+
+  public double deadband(double input)
+  {
+    double deadband = 0.1;
+    if (Math.abs(input) < deadband)
+    {
+      return 0;
+    }
+    else
+    {return input;}
   }
 
   // Called once the command ends or is interrupted.

@@ -4,48 +4,48 @@
 
 package frc.robot.subsystems;
 import frc.robot.Constants.IntakeConstants;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+// import com.revrobotics.CANSparkMax;
+// import com.revrobotics.CANSparkMax.IdleMode;
+// import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase
 {
-  private CANSparkMax intakeMotor;
+  private VictorSPX intakeMotor;
   
   /** Creates a new Intake. */
   public Intake()
   {
-    intakeMotor = new CANSparkMax(IntakeConstants.kSparkMaxPort, MotorType.kBrushless);
-    intakeMotor.setIdleMode(IdleMode.kBrake);
-    intakeMotor.setSmartCurrentLimit(20, 25);
-    intakeMotor.burnFlash();
+    intakeMotor = new VictorSPX(IntakeConstants.kSparkMaxPort);
   }
 
   public void pickUp()
   {
-    intakeMotor.set(0.75);
+    intakeMotor.set(ControlMode.PercentOutput, 1);
   }
   
   public void outtake()
   {
-    intakeMotor.set(-0.75);
+    intakeMotor.set(ControlMode.PercentOutput, -1);
   }
 
   public void stop()
   {
-    intakeMotor.set(0);
+    intakeMotor.set(ControlMode.PercentOutput, 0);
   }
 
   public void hold() {
-    intakeMotor.set(.004);
+    intakeMotor.set(ControlMode.PercentOutput, 0.04);
   }
 
-  public double getSpeed()
-  {
-    return intakeMotor.getEncoder().getVelocity();
-  }
+  // public double getSpeed()
+  // {
+  //   return intakeMotor.getEncoder().getVelocity();
+  // }
 
   @Override
   public void periodic() {

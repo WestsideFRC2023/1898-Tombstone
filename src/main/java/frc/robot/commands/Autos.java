@@ -78,6 +78,19 @@ public final class Autos
     );
   }
 
+  public static CommandBase bumpAndDrive() {
+    PathPlannerTrajectory trajectory = PathPlanner.loadPath("Bump and Drive", SwerveConstants.AUTO_DRIVE_MAX_SPEED / 2.25, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION);
+
+    PPSwerveControllerCommand driveOnCS = makeSwerveControllerCommand(trajectory);
+
+    return new SequentialCommandGroup(
+      new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(trajectory))), 
+      new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
+      driveOnCS,
+      new InstantCommand(() -> RobotContainer.drivetrain.stopModules())
+    );
+  }
+
 
   /* Example static factory for an autonomous command. */
   public static CommandBase doNothing() { return new InstantCommand();}
